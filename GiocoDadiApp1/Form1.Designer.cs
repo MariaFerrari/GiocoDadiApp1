@@ -28,16 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.bgw_nord = new System.ComponentModel.BackgroundWorker();
+            this.bgw_est = new System.ComponentModel.BackgroundWorker();
+            this.bgw_sud = new System.ComponentModel.BackgroundWorker();
+            this.bgw_ovest = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
-            // backgroundWorker
+            // bgw_nord
             // 
-            this.backgroundWorker.WorkerReportsProgress = true;
-            this.backgroundWorker.WorkerSupportsCancellation = true;
-            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
-            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            this.bgw_nord.WorkerReportsProgress = true;
+            this.bgw_nord.WorkerSupportsCancellation = true;
+            this.bgw_nord.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+            this.bgw_nord.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            this.bgw_nord.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
             // Form1
             // 
@@ -52,7 +55,10 @@
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.ComponentModel.BackgroundWorker bgw_nord;
+        private System.ComponentModel.BackgroundWorker bgw_est;
+        private System.ComponentModel.BackgroundWorker bgw_sud;
+        private System.ComponentModel.BackgroundWorker bgw_ovest;
     }
 }
 

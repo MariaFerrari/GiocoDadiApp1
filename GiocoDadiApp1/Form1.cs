@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,17 +17,69 @@ namespace GiocoDadiApp1
         int turni;
         public Random dado = new Random();
         public List<char> classifica;
+        Risorsa risorsa;
         public Form1()
         {
             InitializeComponent();
             vittorie = new List<char>();
             turni = 5;
             classifica = new List<char>();
+            risorsa = new Risorsa(vittorie, classifica);
         }
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            string bgwId = BgwId(sender as BackgroundWorker);
+            int dado;
+            for (int i=0; i<turni; i++)
+            {
+                lock (risorsa)
+                {
+                    switch (bgwId)
+                    {
+                        case "nord":
+                            if (risorsa.Counter == risorsa.nord)
+                                dado = Turno(risorsa, risorsa.nord);
+                            else
+                                return;
+                            break;
+                        case "est":
+                            if (risorsa.Counter == risorsa.est)
+                                dado = Turno(risorsa, risorsa.est);
+                            else
+                                return;
+                            break;
+                        case "sud":
+                            if (risorsa.Counter == risorsa.sud)
+                                dado = Turno(risorsa, risorsa.sud);
+                            else
+                                return;
+                            break;
+                        case "ovest":
+                            if (risorsa.Counter == risorsa.ovest)
+                                dado = Turno(risorsa, risorsa.ovest);
+                            else
+                                return;
+                            break;
+                    }
+                }
+            }
+        }
 
+        private int Turno(Risorsa r, int giocatore)
+        {
+            int giocata = dado.Next(1, 12) + 1;
+            r.AggiungiGiocata(giocatore, giocata);
+            if (r.Counter == 3)
+            {
+                r.AddVittoria();
+                r.AnnullaGiocataPrec();
+                r.Counter = 0;
+                r.CambioTurno();
+            }
+            else
+                r.Counter++;
+            return giocata;
         }
 
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -38,16 +91,38 @@ namespace GiocoDadiApp1
         {
 
         }
+        private string BgwId(BackgroundWorker sender)
+        {
+            if (sender as BackgroundWorker == bgw_nord)
+                return "nord"; 
+            else
+            {
+                if (sender as BackgroundWorker == bgw_est)
+                    return "est";
+                else 
+                {
+                    if (sender as BackgroundWorker == bgw_sud)
+                        return "sud";
+                    else 
+                    {
+                        if (sender as BackgroundWorker == bgw_ovest)
+                            return "ovest";
+                        else return null;
+                    }
+                }
+            }
+        }
     }
     public class Risorsa
     {
-        int nord, est, sud, ovest;
+        public int nord, est, sud, ovest;
+        public int Counter { get; set; }
         int[] giocate;
         List<char> vittorie;
         List<char> classifica;
         public Risorsa(List<char> v, List<char> c)
         {
-            nord = 0; est = 1; sud = 2; ovest = 3;
+            nord = 0; est = 1; sud = 2; ovest = 3; Counter = 0;
             giocate = new int[4];
             vittorie = v; classifica = c;
         }
@@ -79,7 +154,8 @@ namespace GiocoDadiApp1
                     sud = 0;
                     break;
             }
-            switch (ovest) {
+            switch (ovest) 
+            {
                 case 0:
                     ovest++;
                     break;
@@ -93,7 +169,8 @@ namespace GiocoDadiApp1
                     ovest = 0;
                     break;
             }
-            switch (est) {
+            switch (est) 
+            {
                 case 0:
                     est++;
                     break;
@@ -132,9 +209,12 @@ namespace GiocoDadiApp1
         {
             giocate = new int[4];
         }
-        public string[] ClassificaParziale
+        public string[] ClassificaFinale()
         {
-            get {
+            return null;
+        }
+        public string[] ClassificaParziale()
+        {
                 int[] gc = new int[4];
                 for (int i = 0; i < 4; i++)
                     gc[i] = giocate[i];
@@ -157,7 +237,6 @@ namespace GiocoDadiApp1
                         }
                     }
                 return cl;
-            }
         }
     }
 }
